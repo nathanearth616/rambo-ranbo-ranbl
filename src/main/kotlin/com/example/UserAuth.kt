@@ -15,6 +15,8 @@ fun signUp(username: String, password: String, email: String) {
     // Hash the provided password using BCrypt
     // val hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt())
 
+    //TODO; FIND OUT IF YOU CN USE BCRYPT TO HASH EMAIL TOO OR WHETHER YOU NEED SOMETHIG ELSE
+
     // Establish a connection to the database and insert user credentials
     DriverManager.getConnection(url, user, password).use { conn ->
         conn.prepareStatement("INSERT INTO user_credentials (username, password, email) VALUES (?, ?, ?)").use { stmt ->

@@ -1,55 +1,15 @@
-package com.example
-
 import java.sql.DriverManager
 import java.sql.ResultSet
-// import org.mindrot.jbcrypt.BCrypt
-
-
-// Database connection details
-val url = "jdbc:postgresql://localhost:5432/usr_cred"
-val user = "postgres"
-val password = "hitmanagent47"
-
-// Function to register a new user
-fun signUp(username: String, password: String, email: String) {
-    // Hash the provided password using BCrypt
-    // val hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt())
-
-    //TODO; FIND OUT IF YOU CN USE BCRYPT TO HASH EMAIL TOO OR WHETHER YOU NEED SOMETHIG ELSE
-
-    // Establish a connection to the database and insert user credentials
-    DriverManager.getConnection(url, user, password).use { conn ->
-        conn.prepareStatement("INSERT INTO user_credentials (username, password, email) VALUES (?, ?, ?)").use { stmt ->
-            stmt.setString(1, username)
-            stmt.setString(2, password)
-            stmt.setString(3, email)
-            stmt.executeUpdate()
-        }
-    }
-}
-
-// Function to authenticate a user
-fun login(username: String, password: String): Boolean {
-    DriverManager.getConnection(url, user, password).use { conn ->
-        // Prepare SQL statement to select hashed password based on username
-        conn.prepareStatement("SELECT password FROM user_credentials WHERE username = ?").use { stmt ->
-            stmt.setString(1, username)
-            val resultSet: ResultSet = stmt.executeQuery()
-            if (resultSet.next()) {
-                val Password = resultSet.getString("password")// Retrieve hashed password from database
-                // Check if the provided password matches the hashed password using BCrypt
-                return password == Password
-            }
-        }
-    }
-    // Return false if the user authentication fails
-    return false
-}
-
 
 
 fun main() {
+    // Load the PostgreSQL JDBC driver
     Class.forName("org.postgresql.Driver")
+    // Database connection details
+    val url = "jdbc:postgresql://localhost:5432/usr_cred"
+    val user = "postgres"
+    val password = "hitmanagent47"
+
     val testUsername = "testUser"
     val testPassword = "testPassword"
     val testEmail = "test@example.com"
@@ -74,3 +34,36 @@ fun main() {
         println("Login failed with wrong password")
     }
 }
+
+
+// Function to register a new user
+fun signUp(username: String, password: String, email: String) {
+    // Establish a connection to the database and insert user credentials
+    DriverManager.getConnection(url, user, password).use { conn ->
+        conn.prepareStatement("INSERT INTO user_credentials (username, password, email) VALUES (?, ?, ?)").use { stmt ->
+            stmt.setString(1, username)
+            stmt.setString(2, password)
+            stmt.setString(3, email)
+            stmt.executeUpdate()
+        }
+    }
+}
+
+// Function to authenticate a user
+fun login(username: String, password: String): Boolean {
+    DriverManager.getConnection(url, user, password).use { conn ->
+        // Prepare SQL statement to select password based on username
+        conn.prepareStatement("SELECT password FROM user_credentials WHERE username = ?").use { stmt ->
+            stmt.setString(1, username)
+            val resultSet: ResultSet = stmt.executeQuery()
+            if (resultSet.next()) {
+                val storedPassword = resultSet.getString("password")
+                // Compare the provided password with the stored password directly
+                return storedPassword == password
+            }
+        }
+    }
+    // Return false if the user authentication fails
+    return false
+}
+

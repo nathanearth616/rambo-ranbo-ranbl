@@ -1,10 +1,9 @@
 import java.sql.DriverManager
 import java.sql.ResultSet
 
-
 fun main() {
     // Load the PostgreSQL JDBC driver
-    Class.forName("org.postgresql.Driver")
+    // Class.forName("org.postgresql.Driver")
     // Database connection details
     val url = "jdbc:postgresql://localhost:5432/usr_cred"
     val user = "postgres"
@@ -15,10 +14,10 @@ fun main() {
     val testEmail = "test@example.com"
 
     // Sign up a test user
-    signUp(testUsername, testPassword, testEmail)
+    signUp(testUsername, testPassword, testEmail, url, user, password)
     
     // Test login with correct credentials
-    val loggedIn = login(testUsername, testPassword)
+    val loggedIn = login(testUsername, testPassword, url, user, password)
     if (loggedIn) {
         println("Login successful")
     } else {
@@ -27,7 +26,7 @@ fun main() {
     
     // Test login with incorrect credentials
     val wrongPassword = "wrongPassword"
-    val wrongLogin = login(testUsername, wrongPassword)
+    val wrongLogin = login(testUsername, wrongPassword, url, user, password)
     if (wrongLogin) {
         println("Login successful with wrong password (This shouldn't happen)")
     } else {
@@ -35,11 +34,10 @@ fun main() {
     }
 }
 
-
 // Function to register a new user
-fun signUp(username: String, password: String, email: String) {
+fun signUp(username: String, password: String, email: String, url: String, user: String, passwordDb: String) {
     // Establish a connection to the database and insert user credentials
-    DriverManager.getConnection(url, user, password).use { conn ->
+    DriverManager.getConnection(url, user, passwordDb).use { conn ->
         conn.prepareStatement("INSERT INTO user_credentials (username, password, email) VALUES (?, ?, ?)").use { stmt ->
             stmt.setString(1, username)
             stmt.setString(2, password)
@@ -50,8 +48,8 @@ fun signUp(username: String, password: String, email: String) {
 }
 
 // Function to authenticate a user
-fun login(username: String, password: String): Boolean {
-    DriverManager.getConnection(url, user, password).use { conn ->
+fun login(username: String, password: String, url: String, user: String, passwordDb: String): Boolean {
+    DriverManager.getConnection(url, user, passwordDb).use { conn ->
         // Prepare SQL statement to select password based on username
         conn.prepareStatement("SELECT password FROM user_credentials WHERE username = ?").use { stmt ->
             stmt.setString(1, username)
@@ -66,4 +64,3 @@ fun login(username: String, password: String): Boolean {
     // Return false if the user authentication fails
     return false
 }
-

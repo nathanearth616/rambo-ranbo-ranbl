@@ -2,8 +2,10 @@ import java.sql.DriverManager
 import java.sql.ResultSet
 
 fun main() {
+    println("Starting main function...")
     // Load the PostgreSQL JDBC driver
-    // Class.forName("org.postgresql.Driver")
+    Class.forName("org.postgresql.Driver")
+
     // Database connection details
     val url = "jdbc:postgresql://localhost:5432/usr_cred"
     val user = "postgres"
@@ -13,9 +15,11 @@ fun main() {
     val testPassword = "testPassword"
     val testEmail = "test@example.com"
 
+    println("Signing up test user...")
     // Sign up a test user
     signUp(testUsername, testPassword, testEmail, url, user, password)
     
+    println("Testing login with correct credentials...")
     // Test login with correct credentials
     val loggedIn = login(testUsername, testPassword, url, user, password)
     if (loggedIn) {
@@ -24,6 +28,7 @@ fun main() {
         println("Login failed")
     }
     
+    println("Testing login with incorrect credentials...")
     // Test login with incorrect credentials
     val wrongPassword = "wrongPassword"
     val wrongLogin = login(testUsername, wrongPassword, url, user, password)
@@ -32,6 +37,7 @@ fun main() {
     } else {
         println("Login failed with wrong password")
     }
+    println("Main function completed.")
 }
 
 // Function to register a new user
@@ -64,3 +70,4 @@ fun login(username: String, password: String, url: String, user: String, passwor
     // Return false if the user authentication fails
     return false
 }
+

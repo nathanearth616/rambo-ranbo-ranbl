@@ -44,6 +44,10 @@ dependencies {
     // implementation9("io.ktor:ktor-auth")
     implementation("org.postgresql:postgresql:42.7.3")
     implementation("org.mindrot:jbcrypt:0.4")
+    implementation("io.ktor.application")
+    implementation("io.ktor.request")
+    implementation("io.ktor.response.")
+    implementation("io.ktor.routing.")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }

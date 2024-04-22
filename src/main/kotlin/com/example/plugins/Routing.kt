@@ -1,9 +1,9 @@
 package com.example.plugins
 
-import io.ktor.application
-import io.ktor.request
-import io.ktor.response
-import io.ktor.routing
+import io.ktor.application.*
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.routing.*
 import java.sql.DriverManager
 import java.sql.ResultSet
 
